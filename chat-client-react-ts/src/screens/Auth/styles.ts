@@ -30,3 +30,11 @@ export const FormReg = styled.div`
   height: 100%;
   border: 1px solid black;
 `
+
+export const Auth = styled.div`
+    display: 'flex';
+    text-align: 'center';
+    width: 420;
+    justify-content: 'space-around';
+    border: '1px solid black'
+`
