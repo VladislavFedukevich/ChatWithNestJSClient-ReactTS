@@ -12,8 +12,8 @@ export const MessageContainer = styled.div`
   }
 `;
 
-export const Message = styled.div<{ from: boolean }>`
-  max-width: 60%;
+export const MessageItem = styled.div<{ from: boolean }>`
+  max-width: 30%;
   padding: 10px;
   border-radius: 5px;
   align-self: ${({ from }) => from ? 'flex-end' : 'flex-start'};

@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Message } from '../../interface/Message';
 
-import { Container, Button, Messages, MessageItem, MessagesList, Form, Input, Timestamp, Text, Sender, UserList, User } from './styled';
+import { Container, Button, Messages, MessageItem, MessagesList, Form, Input, Text, Sender, UserList, User } from './styled';
 
 type Props = {};
 
@@ -57,19 +57,18 @@ const Chat = (props: Props) => {
                 setSocket(null);
             }
         }
-    }, [selectedUser]);
+    }, [selectedUser, currentUser, socket]);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+        event.preventDefault(); // добавить эту строку
         if (socket) {
             const message: Message = {
                 id: new Date().getTime(),
-                sender: currentUser,
-                receiver: selectedUser,
+                login: currentUser,
                 text: inputValue.replace(`You are writing as ${currentUser} to ${selectedUser} `, ''),
-                timestamp: new Date().toLocaleString(),
+                recipient: selectedUser
             };
-            socket.emit('message', message);
+            socket.emit('msgToClient', message);
             setMessages((prevMessages) => [...prevMessages, message]);
             setInputValue('');
         }
@@ -90,9 +89,8 @@ const Chat = (props: Props) => {
                 <MessagesList>
                     {messages.map((message) => (
                         <MessageItem key={message.id}>
-                            <Sender>{message.sender}</Sender>
+                            <Sender>{message.login}</Sender>
                             <Text>{message.text}</Text>
-                            <Timestamp>{message.timestamp}</Timestamp>
                         </MessageItem>
                     ))}
                 </MessagesList>

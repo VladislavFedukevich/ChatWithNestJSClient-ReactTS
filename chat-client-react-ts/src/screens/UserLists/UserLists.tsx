@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
-import styled from 'styled-components';
 
 import { UserList, User, UsersListWrapper } from './styled';
 
@@ -33,7 +32,7 @@ const UsersList: React.FC = () => {
 
   const handleUserClick = (user: string) => {
     setSelectedUser(user);
-    navigate(`/chat/dialogs/${encodeURIComponent(user)}`);
+    navigate(`/chat/dialog?login=${encodeURIComponent(user)}`);
   };
 
   return (

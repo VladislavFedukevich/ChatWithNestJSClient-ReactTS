@@ -27,7 +27,7 @@ const Auth: React.FC = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                console.log(chatResp1);
+                // console.log(chatResp1);
                 if (chatResp1) {
                     navigate(`/chat/dialogs/`);
                 }

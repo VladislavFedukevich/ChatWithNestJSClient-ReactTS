@@ -1,8 +1,7 @@
-import React from 'react';
 import { useRoutes, RouteObject } from 'react-router-dom';
 import UsersList from './../screens/UserLists/UserLists';
-import History from './../screens/History/History';
 import Auth from '../screens/Auth/Auth';
+import Dialog from '../screens/Dialog/Dialog';
 
 const routes: RouteObject[] = [
     {
@@ -10,11 +9,15 @@ const routes: RouteObject[] = [
         element: <UsersList />,
     },
     {
-        path: '/chat/dialogs/:user',
-        element: <History />,
+        path: '/chat/dialog',
+        element: <Dialog />,
     },
     {
         path: '/auth',
+        element: <Auth />
+    },
+    {
+        path: '/',
         element: <Auth />
     }
 ];
