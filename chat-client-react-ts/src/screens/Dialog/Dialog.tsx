@@ -45,42 +45,42 @@ const Dialog: React.FC = () => {
 
     useEffect(() => {
         if (selectedUser) {
-          setInputValue(`You are writing as ${currentUser} to ${selectedUser}`);
+            setInputValue(`You are writing as ${currentUser} to ${selectedUser}`);
 
-          const socket = io('http://localhost:5000');
-          socket.on('connect', () => {
-            socket.emit('join', { currentUser, selectedUser });
-          });
-          socket.on('message', (message: Message) => {
-            setDialog((prevDialog) => [...prevDialog, message]);
-            setInputValue('');
-          });
-          setSocket(socket);
+            const socket = io('http://localhost:5000');
+            socket.on('connect', () => {
+                socket.emit('join', { currentUser, selectedUser });
+            });
+            socket.on('message', (message: Message) => {
+                setDialog((prevDialog) => [...prevDialog, message]);
+                setInputValue('');
+            });
+            setSocket(socket);
         } else {
-          setInputValue('');
-          setDialog([]);
-          if (socket) {
-            socket.close();
-            setSocket(null);
-          }
+            setInputValue('');
+            setDialog([]);
+            if (socket) {
+                socket.close();
+                setSocket(null);
+            }
         }
-      }, [selectedUser, currentUser]);
+    }, [selectedUser, currentUser]);
 
-      const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (socket) {
-          const message: Message = {
-            id: new Date().getTime(),
-            login: currentUser,
-            text: inputValue.replace(`You are writing as ${currentUser} to ${selectedUser} `, ''),
-            recipient: selectedUser
-          };
-          socket.emit('msgToServer', message);
-          console.log('Message sent to server:', message);
-          setDialog([...dialog, message]);
-          setInputValue('');
+            const message: Message = {
+                id: new Date().getTime(),
+                login: currentUser,
+                text: inputValue.replace(`You are writing as ${currentUser} to ${selectedUser} `, ''),
+                recipient: selectedUser
+            };
+            socket.emit('msgToServer', message);
+            console.log('Message sent to server:', message);
+            setDialog([...dialog, message]);
+            setInputValue('');
         } else {
-          console.log('Socket not connected');
+            console.log('Socket not connected');
         }
     };
 
@@ -90,23 +90,23 @@ const Dialog: React.FC = () => {
 
     return (
         <HistoryContainer>
-          <MessageContainer>
-            {dialog
-              .map((message, id) => (
-                <MessageItem key={id} from={message.login === currentUser}>
-                    {message.text}
-                </MessageItem>
-              ))}
-          </MessageContainer>
-          <InputContainer onSubmit={handleSubmit}>
-            <Input type="text" placeholder="Type your message..." value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
-            <Button type="submit">Send</Button>
-          </InputContainer>
-          <div>
-            <CallButton onClick={makeCall}>Call</CallButton>
-          </div>
+            <MessageContainer>
+                {dialog
+                    .map((message, id) => (
+                        <MessageItem key={id} from={message.login === currentUser}>
+                            {message.text}
+                        </MessageItem>
+                    ))}
+            </MessageContainer>
+            <InputContainer onSubmit={handleSubmit}>
+                <Input type="text" placeholder="Type your message..." value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
+                <Button type="submit">Send</Button>
+            </InputContainer>
+            <div>
+                <CallButton onClick={makeCall}>Call</CallButton>
+            </div>
         </HistoryContainer>
-      );
+    );
 };
 
 export default Dialog;
