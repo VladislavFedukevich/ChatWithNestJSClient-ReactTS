@@ -2,6 +2,7 @@ import { useRoutes, RouteObject } from 'react-router-dom';
 import UsersList from './../screens/UserLists/UserLists';
 import Auth from '../screens/Auth/Auth';
 import Dialog from '../screens/Dialog/Dialog';
+import CallDialog from '../screens/CallDialog/CallDialog';
 
 const routes: RouteObject[] = [
     {
@@ -19,6 +20,10 @@ const routes: RouteObject[] = [
     {
         path: '/',
         element: <Auth />
+    },
+    {
+        path: 'chat/call/:login',
+        element: <CallDialog />
     }
 ];
 

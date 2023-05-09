@@ -33,6 +33,7 @@ const UsersList: React.FC = () => {
   const handleUserClick = (user: string) => {
     setSelectedUser(user);
     navigate(`/chat/dialog?login=${encodeURIComponent(user)}`);
+    console.log(user);
   };
 
   return (

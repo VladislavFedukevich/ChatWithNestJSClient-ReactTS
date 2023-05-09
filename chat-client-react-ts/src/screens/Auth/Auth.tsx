@@ -15,7 +15,8 @@ const Auth: React.FC = () => {
 
     const handleLogin = async (login: string, password: string) => {
         try {
-            const response: AxiosResponse<any, any> = await axios.post('http://localhost:5000/auth/signin', { login, password });
+            const response: AxiosResponse<any, any> = await axios.post('http://localhost:5000/auth/signin', { login, password }, {withCredentials: true} );
+            console.log(response.headers['set-cookie'])
             const token = response.data.token;
             localStorage.setItem('token', token);
             localStorage.setItem('user', login);
