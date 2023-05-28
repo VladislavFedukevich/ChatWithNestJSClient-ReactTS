@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  overflow: hidden;
 `;
 
 export const VideoContainer = styled.div`
@@ -20,7 +20,8 @@ export const VideoContainer = styled.div`
 export const Video = styled.video`
   width: 40%;
   height: auto;
-  background-color: #000;
+  background-color: black;
+  border-radius: 10px;
 `;
 
 export const InputContainer = styled.div`
@@ -42,9 +43,13 @@ export const Input = styled.input`
 export const Button = styled.button`
   font-size: 20px;
   padding: 10px 20px;
-  background-color: #333;
+  background-color: #007991;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #005f73;
+  }
 `;

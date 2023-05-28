@@ -18,9 +18,9 @@ const CallDialog = () => {
         });
 
         peer.on('call', (call) => {
-            var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-            getUserMedia({ video: true, audio: true }, (mediaStream) => {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((mediaStream) => {
                 currentUserVideoRef.current.srcObject = mediaStream;
                 currentUserVideoRef.current.play();
                 call.answer(mediaStream)
@@ -35,9 +35,9 @@ const CallDialog = () => {
     }, [])
 
     const call = (remotePeerId) => {
-        var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-        getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((mediaStream) => {
             currentUserVideoRef.current.srcObject = mediaStream;
             currentUserVideoRef.current.play();
 

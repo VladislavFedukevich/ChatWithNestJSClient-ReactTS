@@ -3,4 +3,5 @@ export interface Message {
   login: any;
   text: string;
   recipient?: string;
+  time?: string
 }

@@ -3,20 +3,22 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 
 import { signUp } from '../../api/signUp';
 
-import { FormContainer, FormInput, FormButton, FormLogin, FormReg, } from './styles';
+import { AuthHeader, AuthContainer, AuthTitle, Form, FormButton, FormInput, FormLabel, ErrorMessage } from './styles';
 import { useNavigate } from 'react-router-dom';
 
 const Auth: React.FC = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true);
     const [login, setLogin] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string>('');
+    const [error, setError] = useState<any>('');
     const navigate = useNavigate();
 
     const handleLogin = async (login: string, password: string) => {
         try {
-            const response: AxiosResponse<any, any> = await axios.post('http://localhost:5000/auth/signin', { login, password }, {withCredentials: true} );
-            console.log(response.headers['set-cookie'])
+            const response: AxiosResponse<any, any> = await axios.post('http://localhost:5000/auth/signin',
+            { login, password },
+            { withCredentials: true},
+            );
             const token = response.data.token;
             localStorage.setItem('token', token);
             localStorage.setItem('user', login);
@@ -33,8 +35,20 @@ const Auth: React.FC = () => {
                     navigate(`/chat/dialogs/`);
                 }
             }
-
         } catch (error: any) {
+            if (error instanceof AxiosError) {
+                setError(error.response?.data || 'Unknown error occurred');
+            } else {
+                setError('Unknown error occurred');
+            }
+        }
+    }
+
+    const handleSignUp = async (login: string, password: string) => {
+        try {
+            await signUp(login, password);
+            await handleLogin(login, password);
+        } catch (error: unknown) {
             if (error instanceof AxiosError) {
                 setError(error.response?.data || 'Unknown error occurred');
             } else {
@@ -48,48 +62,41 @@ const Auth: React.FC = () => {
         if (isLogin) {
             await handleLogin(login, password);
         } else {
-            try {
-                await signUp(login, password);
-                await handleLogin(login, password);
-            } catch (error: unknown) {
-                if (error instanceof AxiosError) {
-                    setError(error.response?.data || 'Unknown error occurred');
-                } else {
-                    setError('Unknown error occurred');
-                }
-            }
+            await handleSignUp(login, password);
         }
     };
 
-    return (
-        <FormContainer>
-            <div style={{ display: 'flex', textAlign: 'center', width: 420, justifyContent: 'space-around', border: '1px solid black' }}>
-                <FormLogin
-                    onClick={() => setIsLogin(true)}
-                    className={isLogin ? "active" : ""}>Login</FormLogin>
-                <FormReg
-                    onClick={() => setIsLogin(false)}
-                    className={!isLogin ? "active" : ""}
-                >Register</FormReg>
-            </div>
-            <h1>{isLogin ? 'Login' : 'Register'}</h1>
-            <form onSubmit={handleSubmit}>
-                <FormInput
-                    type='text'
-                    placeholder='Email'
-                    value={login}
-                    onChange={(event: any) => setLogin(event.target.value)}
-                />
-                <FormInput
-                    type='password'
-                    placeholder='Password'
-                    value={password}
-                    onChange={(event: any) => setPassword(event.target.value)}
-                />
-                <FormButton type='submit'>{isLogin ? 'Login' : 'Register'}</FormButton>
+    const toggleForm = () => {
+        setIsLogin(!isLogin);
+        setError('');
+    };
 
-            </form>
-        </FormContainer>
+    return (
+        <>
+            <AuthContainer>
+                <h1>{isLogin ? 'Login' : 'Register'}</h1>
+                <Form onSubmit={handleSubmit}>
+                    <FormLabel htmlFor="login">Login</FormLabel>
+                    <FormInput
+                        type="text"
+                        id="login"
+                        value={login}
+                        onChange={(event: any) => setLogin(event.target.value)}
+                    />
+                    <FormLabel htmlFor="password">Password</FormLabel>
+                    <FormInput
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(event: any) => setPassword(event.target.value)}
+                    />
+                    <FormButton type="submit">{isLogin ? 'Login' : 'Register'}</FormButton>
+                </Form>
+                {error && <ErrorMessage>{error.message || error}</ErrorMessage>}
+                <p>{isLogin ? 'Don\'t have an account?' : 'Already have an account?'}</p>
+                <FormButton onClick={toggleForm}>{isLogin ? 'Register' : 'Login'}</FormButton>
+            </AuthContainer>
+        </>
     );
 };
 

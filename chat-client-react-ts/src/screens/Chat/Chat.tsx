@@ -22,7 +22,7 @@ const Chat = (props: Props) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        axios.get<any, AxiosResponse<any>>('http://localhost:5000/chat/dialogs', {
+        axios.get<any, AxiosResponse<any>>('https://192.168.224.20:3000/chat/dialogs', {
             withCredentials: true, headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -41,7 +41,7 @@ const Chat = (props: Props) => {
         if (selectedUser) {
             setInputValue(`You are writing as ${currentUser} to ${selectedUser}`);
 
-            const socket = io('http://localhost:5000');
+            const socket = io('https://192.168.224.20:3000');
             socket.on('connect', () => {
                 socket.emit('join', { currentUser, selectedUser });
             });

@@ -1,43 +1,60 @@
 import styled from "styled-components";
 
-export const UsersListWrapper = styled.div`
-    margin: 200px auto;
+export const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f5f5;
+`;
+
+export const HeaderWrapper = styled.div`
     display: flex;
-    flex-direction: column;
     align-items: center;
+    color: #007991;
+    font-size: 34px;
+    font-weight: 800;
+    text-transform: uppercase;
+`
+
+export const UsersListWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 120px;
+  text-align: center;
 `;
 
 export const UserList = styled.div`
-    flex: 1;
-    padding: 16px;
-    background-color: #f5f5f5;
-    overflow-y: auto;
-    width: 100%;
-    max-width: 400px;
-    margin-top: 16px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  overflow-y: auto;
+  padding: 16px;
+  margin-top: 16px;
+  color: white;
+  margin: 20px auto;
 `;
 
 export const User = styled.div`
-    padding: 8px;
-    margin-bottom: 8px;
-    background-color: #007bff;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    cursor: pointer;
-    &:hover {
-        background-color: #fff;
-        color: black;  
-    }
-    color: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #007991;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  &:hover {
+    background-color: #1e7377;
+    color: white;
+  }
 `;
 
-export const Title = styled.h2`
-    margin-top: 32px;
-    margin-bottom: 16px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #007bff;
+export const Title = styled.h1`
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 20px;
 `;

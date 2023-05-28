@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
 import { io, Socket } from 'socket.io-client';
 
@@ -9,15 +9,25 @@ import { MessageContainer, MessageItem, HistoryContainer, Input, InputContainer,
 
 const Dialog: React.FC = () => {
     const [dialog, setDialog] = useState<Message[]>([]);
-    const [message, setMessages] = useState<any>('');
     const [inputValue, setInputValue] = useState<any>('');
     const location = useLocation();
     const [socket, setSocket] = useState<Socket | null>(null);
     const navigate = useNavigate();
+    const bottomRef = useRef<HTMLDivElement | null>(null);
 
     const currentUser = localStorage.getItem('user');
     const searchParams = new URLSearchParams(location.search);
     const selectedUser = searchParams.get('login') || '';
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const year = date.getFullYear().toString();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${month}.${day}.${year}-${hours}.${minutes}`;
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -36,11 +46,12 @@ const Dialog: React.FC = () => {
                 const dialog: Message[] = data
                     .map((elem: any) => ({
                         id: elem.id,
-                        login: elem.selectedUser,
+                        login: elem.login,
                         text: elem.text,
-                        recipient: selectedUser,
+                        recipient: elem.recipient,
+                        time: formatDate(elem.createdAt)
                     }))
-                    .sort((a: Message, b: Message) => a.id - b.id); // Сортируем по id сообщения
+                    .sort((a: Message, b: Message) => a.id - b.id);
                 setDialog(dialog);
             })
             .catch((error: any) => {
@@ -50,7 +61,7 @@ const Dialog: React.FC = () => {
 
     useEffect(() => {
         if (selectedUser) {
-            setInputValue(`You are writing as ${currentUser} to ${selectedUser}`);
+            setInputValue('');
 
             const socket = io('http://localhost:5000');
             socket.on('connect', () => {
@@ -73,20 +84,27 @@ const Dialog: React.FC = () => {
         }
     }, [selectedUser, currentUser]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 200);
+    }, [dialog]);
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (socket) {
+        if (inputValue.trim() !== '' && socket) {
             const message: Message = {
                 id: Math.floor(new Date().getTime() / 10000),
                 login: currentUser,
                 text: inputValue.replace(`You are writing as ${currentUser} to ${selectedUser} `, ''),
-                recipient: selectedUser
+                recipient: selectedUser,
+                time: formatDate(new Date().toISOString())
             };
             socket.emit('msgToServer', message);
             setDialog([...dialog, message]);
             setInputValue('');
         } else {
-            console.log('Socket not connected');
+            console.log('Socket not connected or message is empty');
         }
     };
 
@@ -96,19 +114,33 @@ const Dialog: React.FC = () => {
 
     return (
         <Container>
-            <HistoryContainer>
+            <HistoryContainer ref={bottomRef}>
                 <MessageContainer>
                     {dialog.map((message, index) => (
-                        <MessageItem key={index} from={message.login === currentUser ? 'right' : 'left'}>
+                        <MessageItem
+                            key={index}
+                            from={message.login === currentUser ? 'right' : 'left'}
+                            currentUser={currentUser}
+                        >
                             <span>{message.text}</span>
+                            <p>{message.time}</p>
                         </MessageItem>
                     ))}
                 </MessageContainer>
-                <InputContainer onSubmit={handleSubmit}>
-                    <Input type="text" placeholder="Type your message..." value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
-                    <Button type="submit">Send</Button>
-                </InputContainer>
-                <CallButton onClick={makeCall}>Call</CallButton>
+                <>
+                    <InputContainer onSubmit={handleSubmit}>
+                        <Input
+                            type="text"
+                            placeholder="Type your message..."
+                            value={inputValue}
+                            onChange={(event) => setInputValue(event.target.value)}
+                        />
+                        <Button type="submit">Send</Button>
+                        <CallButton onClick={makeCall}>Call</CallButton>
+
+                    </InputContainer>
+                </>
+
             </HistoryContainer>
         </Container>
     );
