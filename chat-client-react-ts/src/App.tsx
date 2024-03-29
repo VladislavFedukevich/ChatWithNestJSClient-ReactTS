@@ -3,6 +3,7 @@ import Routers from './routes/routes';
 import { AuthHeader, AuthTitle } from './screens/Auth/styles';
 
 const App = () => {
+
     return (
         <>
             <AuthHeader>
